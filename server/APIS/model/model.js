@@ -13,6 +13,7 @@ const studentSchema = mongoose.Schema({
   lastName: String,
   phone: String,
   file: String,
+  date:String,
 });
 const student = mongoose.model("codesForStudents", studentSchema);
 const AdminLoginModel = async (body) => {
@@ -87,5 +88,45 @@ const studentLoginModel = async(body) => {
     return { error, message: "student login failed", status: 400 };
   }
 };
+const selfiModel=async(body)=>{
 
-module.exports = { AdminLoginModel, StudentFormMOdel, studentLoginModel };
+try {
+
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+  }
+    function formatDate(date) {
+        return [
+          date.getFullYear(),
+          padTo2Digits(date.getMonth() + 1),
+          padTo2Digits(date.getDate()),
+        ].join('-');
+      }
+
+      const date1=formatDate(new Date())
+      body.date=date1;
+    const data=await student.create(body);
+    return {data,message:"present",status:200} 
+} catch (error) {
+    console.log("error",error);
+    return {error,message:"error", status:400}
+}
+}
+const getStudentModel=async()=>{
+    try {
+        const data=await student.find();
+        return {data,message:"getData",status:200}
+    } catch (error) {
+        return {error,message:" can't data get",status:400}
+    }
+}
+ const getStudentDateModel=async(date)=>{
+    try {
+        const data=await student.find({date});
+        const length=data.length();
+        return {length,data,message:"getData",status:200}
+    } catch (error) {
+        return {error,message:" can't data get",status:400}
+    }
+}
+module.exports = {getStudentModel, AdminLoginModel, StudentFormMOdel, studentLoginModel,selfiModel,getStudentDateModel };

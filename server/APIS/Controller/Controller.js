@@ -1,4 +1,4 @@
-const { AdminLoginModel, StudentFormMOdel, studentLoginModel } = require("../model/model");
+const { AdminLoginModel, StudentFormMOdel, studentLoginModel, getStudentModel, getStudentDateModel, selfiModel } = require("../model/model");
 
 const  AdminLoginControlle=async(req,res)=>{
 const data=await AdminLoginModel(req.body);
@@ -15,4 +15,16 @@ const data=await studentLoginModel(req.body);
 console.log("data=m=",data);
 res.send(data)
 }
-module.exports={AdminLoginControlle,studentFormController,studentLoginController}
+const postSelfiController=async(req,res)=>{
+    const file=req?.file?.path;
+    const bodyData={...req.body,file}
+    console.log("body data",bodyData);
+const data=await selfiModel(bodyData);
+res.send(data);
+}
+const studentGetController=async(req,res)=>{
+  const date=  req?.query?.date;
+const data= date?await getStudentDateModel(date): await getStudentModel()
+res.send(data);
+}
+module.exports={studentGetController, AdminLoginControlle,studentFormController,studentLoginController,postSelfiController}
